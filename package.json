@@ -1,0 +1,45 @@
+{
+  "name": "opensig-lib",
+  "version": "1.0.0-alpha.1",
+  "description": "Blockchain e-sign library",
+  "main": "./src/opensig.js",
+  "files": [
+    "LICENSE",
+    "README.md",
+    "src/"
+  ],
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --reporter spec",
+    "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- -R spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/opensig/opensig.git"
+  },
+  "keywords": [
+    "electronic signature",
+    "e-sign",
+    "esign",
+    "blockchain",
+    "opensig"
+  ],
+  "author": "dnpotter",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/opensig/opensig/issues"
+  },
+  "homepage": "https://github.com/opensig/opensig#readme",
+  "dependencies": {
+    "bitcoinjs-lib": "^2.2.0",
+    "request-promise": "^2.0.1"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-as-promised": "^5.3.0",
+    "istanbul": "^0.4.3",
+    "mocha": "^2.4.5"
+  }
+}
