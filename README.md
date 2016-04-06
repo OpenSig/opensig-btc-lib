@@ -3,7 +3,7 @@
 [![NPM](https://img.shields.io/npm/v/bitcoinjs-lib.svg)](https://www.npmjs.org/package/bitcoinjs-lib)
 
 
-Blockchain e-sign library.  A class that implements the [opensig e-sign protocol](http://opensig.net/library/protocol) providing functions to sign and verify files, recording signatures on the bitcoin blockchain. 
+Blockchain e-sign library.  A javascript library that implements the opensig e-sign protocol providing functions to sign and verify files, recording signatures on the bitcoin blockchain. 
 
 ## Primary Features
 - **Create**: generate a new private key.
@@ -12,7 +12,7 @@ Blockchain e-sign library.  A class that implements the [opensig e-sign protocol
 
 ## Secondary Features
 - **Send**: create and publish a transaction to spend any amount from one address to another.
-- **Publish**: publishes a transaction on the blockchain.
+- **Publish**: publish a transaction on the blockchain.
 - **Balance**: retrieve the balance of your key (or any public key) from the blockchain.
 - **Get Key**: obtain private key, wif and public keys from any private key, WIF or file.
 
@@ -80,14 +80,14 @@ opensig.send( <from>, <to>, [amount], [fee], [publish] );  // returns a promise
 ### Balance
 Returns a promise to resolve the sum of unspent transaction outputs retrieved from the blockchain for the given public key.
 ```javascript
-opensig.balance( <key> )   // returns a KeyPair object
+opensig.balance( <key> )   // returns an integer
 ```
 `key`   Public key.  _(string containing a public key, hex64 private key, WIF or file.  Can also accept a KeyPair object)_ 
 
 ### Get Key
 Returns a promise to resolve a KeyPair object from the given private key, WIF or file.
 ```javascript
-opensig.getKey( <key> )   // returns a KeyPair object
+opensig.getKey( <key> )   // returns a promise
 ```
 `key`   Private key.  _(string containing a hex64 private key, WIF or file)_ 
 
@@ -102,6 +102,7 @@ Create a new random private key and log its information to the console in variou
 var key = opensig.create();
 console.log( key.toString() );
 console.log( key.toString("<full>") );
+console.log( key.toString("<pub>") );
 console.log( key.toString("public key: <pub>, wif: <wif>, private key: <priv>") );
 console.log( key.toString("compressed keys: <pubc> <wifc>") );
 console.log( key.toString("uncompressed keys: <pubu> <wifu>") );
@@ -111,19 +112,19 @@ Send 100000 satoshis from another address to your new key using the WIF of the o
 const myWellFundedWIF = "L1FpYdmkgXyRHQrMjy4ChBmJ4dbgJmr5Y1h5eX9LmsPWKBZBqkUg";
 opensig.send( myWellFundedWIF, key, 100000, undefined, true )
     .then( function log(response){ console.log(response); } )
-    .catch( function logError(err){ console.error(err); } );
+    .catch( function logError(err){ console.error(err.message); } );
 ```
 Get the blockchain balance for the key...
 ```javascript
 opensig.balance( key )
     .then( function log(balance){ console.log(balance); } )
-    .catch( function logError(err){ console.error(err); } );
+    .catch( function logError(err){ console.error(err.message); } );
 ```
 Generate a transaction to sign my_file.doc, including publishing it to the blockchain, and log the resulting Receipt object or error to the console...
 ```javascript
 opensig.sign( "my_file.doc", key, true )
     .then( function log(receipt){ console.log(receipt); } )
-    .catch( function logError(err){ console.error(err); } );
+    .catch( function logError(err){ console.error(err.message); } );
 ```
 Verify my_file.doc and output the signatures to the console...
 ```javascript
@@ -132,19 +133,19 @@ opensig.verify( "my_file.doc" )
         for( var i in signatures ){
             console.log( signatures[i].toString() );
         } } )
-    .catch( function logError(err){ console.error(err); } );
+    .catch( function logError(err){ console.error(err.message); } );
 ```
 Publish a transaction taken from a Receipt obtained from a previous call to `send`, logging the blockchain api response or error to the console...
 ```javascript
 opensig.publish( myReceipt.txnHex )
     .then( function log(response){ console.log(response); } )
-    .catch( function logError(err){ console.error(err); } );
+    .catch( function logError(err){ console.error(err.message); } );
 ```
 Get a KeyPair object from a file and output its public key...
 ```javascript
 opensig.getKey( "my_file.doc" )
-    .then( function log(keyPair){ console.log( keyPair.toString("<pub>") ); } )
-    .catch( function logError(err){ console.error(err); } );
+    .then( function log(keyPair){ console.log( keyPair.publicKey ); } )
+    .catch( function logError(err){ console.error(err.message); } );
 ```
 
 ## Projects utilizing opensig-lib
