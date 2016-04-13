@@ -6,11 +6,20 @@
  * and the blockchain api response (or 'Not Published').
  */
  
-function Receipt( publicKey, response, txnID, txnHex ){
+function Receipt( from, fromLabel, to, toLabel, amount, fee, inputAmount, change, response, txnID, txnHex ){
+
+	this.from = { address: from, label: fromLabel };
+	this.to = { address: to, label: toLabel };
+
+	this.input = inputAmount;
+	this.payment = amount;
+	this.fee = fee;
+	this.change = change;
+
 	this.response = response;
-	this.address = publicKey
 	this.txnID = txnID;
 	this.txnHex = txnHex;
+
 }
  
 

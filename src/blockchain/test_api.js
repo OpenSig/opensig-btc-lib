@@ -43,8 +43,14 @@ module.exports = function(url){
 	}
 	else{
 		testNumber++;
-		var testData = readTestData( testFilePrefix+testNumber, url );
-		assert.deepEqual(url, testData.expectedURL);
+		var testData = readTestData( testFilePrefix+testNumber );
+		var urlStr = url;
+		if( (typeof url) != "string" ) urlStr = JSON.stringify(url);
+		if( urlStr != testData.expectedURL ){ 
+			throw new Err.TestError("Test failure: invalid URL '"+urlStr+"'",
+				"Received: '"+url+"'," +
+				"Expected: '"+testData.expectedURL+"'"); 
+		}
 		if( testData.testType == "synchronousError" )
 			throw testData.error ? testData.error : new Err.TestError(testData.data);
 		else return new Promise(

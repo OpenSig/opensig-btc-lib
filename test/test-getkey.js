@@ -29,12 +29,12 @@ describe ("GETKEY Feature", function() {
 
 
 		it("calling getKey with a non-existent file results in an error", function() {
-			return expect( opensig.getKey("non-existent-file") ).to.eventually.be.rejectedWith("argument is not a private key, readable file or wif");
+			return expect( opensig.getKey("non-existent-file") ).to.eventually.be.rejectedWith("argument 'non-existent-file' is not a private key, readable file or wif");
 		});
 
 
 		it("calling getKey with nonsense results in an error", function() {
-			return expect( opensig.getKey("nonsense%&£@*&") ).to.eventually.be.rejectedWith("argument is not a private key, readable file or wif");
+			return expect( opensig.getKey("nonsense%&£@*&") ).to.eventually.be.rejectedWith("argument 'nonsense%&£@*&' is not a private key, readable file or wif");
 		});
 
 

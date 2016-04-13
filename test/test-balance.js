@@ -14,7 +14,7 @@ describe("BALANCE Features:", function() {
 		var expectedError = {
 			name:    'OpenSigError',
 			code:    200,
-			message: 'argument is not a public key, private key, readable file or wif',
+			message: 'argument \'nonsense\' is not a public key, private key, readable file or wif',
 			details: "nonsense" };
 
 		return callUUT( "nonsense", [ ], "reject", expectedError );

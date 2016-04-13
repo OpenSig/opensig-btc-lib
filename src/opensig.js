@@ -32,7 +32,9 @@ module.exports = {
 	send: send,
 	balance: balance,
 	getKey: getKey,
-	blockchainAPI: Blockchain
+	blockchainAPI: Blockchain,
+	KeyPair: KeyPair,
+	Error: Err
 }
 
 
@@ -44,8 +46,8 @@ module.exports = {
  */
 function verify( file ){
 
-	if( !file || file == "" ) throw new Err.ArgumentError("invalid file argument"); 
-
+	checkForMissingArg( file, "file" );
+	
 	return getKey(file).then( Blockchain.verify );
 
 }
@@ -71,7 +73,8 @@ function verify( file ){
  */
 function sign( file, key, publish, paymentIn, feeIn ){
 
-	if( !file || file == "" ) throw new Err.ArgumentError("invalid file argument"); 
+	checkForMissingArg( file, "file" );
+	checkForMissingArg( key, "key" );
 
 	var payment = (paymentIn == undefined) ? minimumPayment : paymentIn;
 	var fee = (feeIn == undefined) ? minimumFee : feeIn;
@@ -89,20 +92,25 @@ function sign( file, key, publish, paymentIn, feeIn ){
  *   key        : can be a KeyPair, public key, wif, private key (hex64) or file.
  */
 function balance( key ){
+
+	checkForMissingArg( key, "key" );
+	
 	return getPublicKey(key).then( Blockchain.getBalance );
 }
 
 
 /*
- * create [label]
+ * create [label] [privateKey]
  *
- * Creates a new KeyPair with the optional label.
+ * Creates a new KeyPair with the optional label or returns a KeyPair representing the
+ * given private key.
  *
  * Parameters:
- *   label  : optional label for this key
+ *   label      : optional label for this key
+ *   privateKey : wif or private key (hex64)
  */
-function create( label ){
-	return new KeyPair(label, undefined);
+function create( label, privateKey ){
+	return new KeyPair(label, privateKey);
 }
 
 
@@ -122,23 +130,30 @@ function create( label ){
  */
 function send( from, to, amount, feeIn, publishIn ){
 
-	var payment = amount;
-	var fee = (feeIn == undefined) ? minimumFee : feeIn;
-	if( payment < 0 ) throw new Err.ArgumentError("payment amount cannot be negative");
-	if( fee < 0 ) throw new Err.ArgumentError("miner's fee cannot be negative");
+	checkForMissingArg( from, "from" );
+	checkForMissingArg( to, "to" );
+	checkForMissingArg( amount, "amount" );
+	
+	var payment = (amount == "all") ? amount : parseInt(amount);
+	var fee = (feeIn == undefined) ? minimumFee : parseInt(feeIn);
+
+	if( payment != "all" && ( isNaN(payment) || payment <= 0 ) ) throw new Err.ArgumentError("invalid payment amount '"+amount+"'");
+	if( isNaN(fee) || fee < 0 ) throw new Err.ArgumentError("invalid fee '"+feeIn+"'");
 
 	var fromKey;
-	var toKey;
-	var txID;
-	var txHex;
+	var receipt = new TransactionReceipt();
+	receipt.to.label = (to instanceof KeyPair) ? to.label : !isPublicKey(to) ? to : undefined;
 
 	function getToKey( fromKeyIn ){
 		fromKey = fromKeyIn;
+		receipt.from.address = fromKey.publicKey;
+		receipt.from.label = fromKey.label;
 		return getPublicKey(to);
 	}
 	
 	function getUTXOs( toKeyIn ){
 		toKey = toKeyIn;
+		receipt.to.address = toKeyIn;
 		return Blockchain.getUTXO(fromKey);
 	}
 
@@ -154,6 +169,11 @@ function send( from, to, amount, feeIn, publishIn ){
 			throw new Err.InternalError("failed to create a valid transaction inputs",JSON.stringify(txInputs)+"\npayment: "+payment+"\nfee: "+fee);
 
 		var txnBuilder = Blockchain.getTransactionBuilder();
+
+		receipt.input = txInputs.value;
+		receipt.payment = payment;
+		receipt.fee = fee;
+		receipt.change = txInputs.change;
 
 		// add inputs
 		var utxo;
@@ -186,22 +206,25 @@ function send( from, to, amount, feeIn, publishIn ){
 		// build
 		try{
 			var txn = txnBuilder.build();
+			receipt.txnID = txn.getId();
+			receipt.txnHex = txn.toHex();
+			return receipt.txnHex;
 		}
 		catch(err){ throw new Err.InternalError("could not build transaction due to: "+err.message,err); }
-		
-		txID = txn.getId();
-		txHex = txn.toHex();
-		return txHex;
 		
 	}
 
 	function publishTransaction( txn ){
 		if( publishIn ) return publish(txn).then( formatOutput );
-		else return new TransactionReceipt( toKey, "Not Published", txID, txHex );
+		else{
+			receipt.response = "Not Published";
+			return receipt;
+		}
 	}
 	
 	function formatOutput( pushTxResponse ){
-		return new TransactionReceipt( toKey, pushTxResponse, txID, txHex );;
+		receipt.response = pushTxResponse;
+		return receipt;
 	}
 	
 	return getKey( from )
@@ -220,6 +243,9 @@ function send( from, to, amount, feeIn, publishIn ){
  * Promises to publish the given transaction (in hex) to the blockchain
  */
 function publish( txn ){
+
+	checkForMissingArg( txn, "transaction" );
+	
 	return Blockchain.sign(txn);
 }
 	
@@ -242,7 +268,7 @@ function publish( txn ){
  	catch(err){
 		return sha256( token )
 			.catch( function(err){ 
-				throw new Err.ArgumentError("argument is not a private key, readable file or wif", token); 
+				throw new Err.ArgumentError("argument '"+token+"' is not a private key, readable file or wif", token); 
 			});
  	}
 }
@@ -267,7 +293,7 @@ function getPublicKey( token ){
 	else{ 
 		return getKey(token).then( function( keyPair ){ return keyPair.publicKey } )
 			.catch( function notPrivateKeyWifOrFile(err){
-				throw new Err.ArgumentError("argument is not a public key, private key, readable file or wif", token); 
+				throw new Err.ArgumentError("argument '"+token+"' is not a public key, private key, readable file or wif", token); 
 			} );
 	}
 }
@@ -291,9 +317,9 @@ function greedySelectUTXO( utxos, payment, fee ){
 		var txInputs = new TransactionInputs( result, "all", 0 );
 		if( txInputs.value > fee ) return txInputs;
 	}
-	else{
+	else{ 
 		// pick smallest transaction whose value >= target
-		var target = payment+fee;
+		var target = payment + fee; 
 		utxos.sort(UTXO.compare);
 		for( var i in utxos ){
 			if( utxos[i].value >= target ){
@@ -359,4 +385,8 @@ function sha256( file ){
 
 
 
-function isPublicKey( str ){ return str.match && str.match(/^[0-9A-Za-z^OIl]{27,34}$/); }
+function isPublicKey( str ){ return str && str.match && str.match(/^[0-9A-Za-z^OIl]{27,34}$/); }
+
+function checkForMissingArg( arg, name ){ 
+	if( arg == undefined || (""+arg).match(/^\s*$/) ) throw new Err.ArgumentError(name+" argument is missing"); 
+}

@@ -16,17 +16,17 @@ describe("VERIFY Feature:", function() {
 
 
 		it("calling verify with no argument results in an error", function() {
-			expect( function(){ opensig.verify() } ).to.throw(OpenSigError, "invalid file argument");
+			expect( function(){ opensig.verify() } ).to.throw(OpenSigError, "file argument is missing");
 		});
 
 
 		it("calling verify with an empty argument results in an error", function() {
-			expect( function(){ opensig.verify("") } ).to.throw(OpenSigError, "invalid file argument");
+			expect( function(){ opensig.verify("") } ).to.throw(OpenSigError, "file argument is missing");
 		});
 
 
 		it("calling verify with a non-existent file results in an error", function() {
-			return expect( opensig.verify("non-existent-file") ).to.eventually.be.rejectedWith("argument is not a private key, readable file or wif");
+			return expect( opensig.verify("non-existent-file") ).to.eventually.be.rejectedWith("argument 'non-existent-file' is not a private key, readable file or wif");
 		});
 
 	});
