@@ -34,7 +34,7 @@ Returns a KeyPair object containing a random private key and its associated wif 
 ```javascript
 opensig.create( [label] )   // returns a KeyPair object
 ```
-`label`  optional label to populate the key's lable property
+`label`  optional label to populate the key's label property
 
 ### Sign
 Returns a promise to resolve a Receipt object containing a transaction to sign the given file with the given key, and, optionally, to publish the transaction on the blockchain.
