@@ -1,6 +1,6 @@
 {
   "name": "opensig-lib",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0-alpha.3",
   "description": "Blockchain e-sign library",
   "main": "./src/opensig.js",
   "files": [
@@ -33,6 +33,7 @@
   },
   "homepage": "https://github.com/opensig/opensig#readme",
   "dependencies": {
+    "bigi": "^1.4.1",
     "bitcoinjs-lib": "^2.2.0",
     "request-promise": "^2.0.1"
   },
