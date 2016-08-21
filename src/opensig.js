@@ -286,9 +286,10 @@ function publish( txn ){
  * or file.  
  */
 function getPublicKey( token ){
-	if( isPublicKey(token) ){
+	var id = decodeOpenSigID(token);
+	if( id ){
 		return new Promise( 
-			function( resolver, rejecter ){ resolver( token ); } );
+			function( resolver, rejecter ){ resolver( id.publicKey ); } );
 	}
 	else{ 
 		return getKey(token).then( function( keyPair ){ return keyPair.publicKey } )
@@ -386,6 +387,17 @@ function sha256( file ){
 
 
 function isPublicKey( str ){ return str && str.match && str.match(/^[0-9A-Za-z^OIl]{27,34}$/); }
+
+function decodeOpenSigID( str ){
+	if( ! str.split ) return undefined;
+	var fields = str.split('-');
+	if( fields.length == 1 && isPublicKey(fields[0]) ) return { publicKey: fields[0], blockchainID: 'btc' };
+	if( fields.length == 2 && isPublicKey(fields[0]) ) return { publicKey: fields[0], blockchainID: fields[1].toLowerCase() };
+	if( fields.length == 3 && 
+	    fields[0].toLowerCase() == 'opensig' && 
+	    isPublicKey(fields[1]) && fields[2].length > 0 ) return { publicKey: fields[1], blockchainID: fields[2].toLowerCase() };
+	return undefined;
+}
 
 function checkForMissingArg( arg, name ){ 
 	if( arg == undefined || (""+arg).match(/^\s*$/) ) throw new Err.ArgumentError(name+" argument is missing"); 

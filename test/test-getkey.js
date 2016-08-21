@@ -104,9 +104,24 @@ describe ("GETKEY Feature", function() {
 		});
 
 
-		it("from the file itself", function() {
+		it("from the file name", function() {
 			
 			opensig.getKey("test/test_files/hello_world.txt")
+				.then( function checkResults( key ){
+					checkKey(key, undefined);
+					expect( key.toString("<full>") ).to.equal(helloWorld_FullOutputKey_fileLabel);
+				} );
+
+		});
+
+
+		it("from a File object", function() {
+			var File = function(name){ 
+				this.name = name;
+				this.lastModified = 0;
+			}
+			var file = new File("test/test_files/hello_world.txt");
+			opensig.getKey(file)
 				.then( function checkResults( key ){
 					checkKey(key, undefined);
 					expect( key.toString("<full>") ).to.equal(helloWorld_FullOutputKey_fileLabel);

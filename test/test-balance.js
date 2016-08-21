@@ -9,17 +9,62 @@ const expect = chai.expect;
 describe("BALANCE Features:", function() {
 
 
-	it("get balance with invalid parameter", function() {
+	describe("get balance with invalid", function(){
+
+		it("parameter", function() {
 	
-		var expectedError = {
-			name:    'OpenSigError',
-			code:    200,
-			message: 'argument \'nonsense\' is not a public key, private key, readable file or wif',
-			details: "nonsense" };
+			var param = 'nonsense';
+			
+			var expectedError = {
+				name:    'OpenSigError',
+				code:    200,
+				message: 'argument \'' + param + '\' is not a public key, private key, readable file or wif',
+				details: param };
 
-		return callUUT( "nonsense", [ ], "reject", expectedError );
+			return callUUT( param, [ ], "reject", expectedError );
+		});
+
+
+		it("opensig id: no blockchain id", function() {
+	
+			var param = 'OPENSIG-19YYzmYa8ggFJbkUWgChfr9C6devpMFd1z';
+			
+			var expectedError = {
+				name:    'OpenSigError',
+				code:    200,
+				message: 'argument \'' + param + '\' is not a public key, private key, readable file or wif',
+				details: param };
+
+			return callUUT( param, [ ], "reject", expectedError );
+		});
+
+		it("opensig id: empty blockchain id", function() {
+	
+			var param = 'OPENSIG-19YYzmYa8ggFJbkUWgChfr9C6devpMFd1z-';
+			
+			var expectedError = {
+				name:    'OpenSigError',
+				code:    200,
+				message: 'argument \'' + param + '\' is not a public key, private key, readable file or wif',
+				details: param };
+
+			return callUUT( param, [ ], "reject", expectedError );
+		});
+
+		it("opensig id: invalid prefix", function() {
+	
+			var param = 'OPENSI-19YYzmYa8ggFJbkUWgChfr9C6devpMFd1z';
+			
+			var expectedError = {
+				name:    'OpenSigError',
+				code:    200,
+				message: 'argument \'' + param + '\' is not a public key, private key, readable file or wif',
+				details: param };
+
+			return callUUT( param, [ ], "reject", expectedError );
+		});
+
 	});
-
 
 	it("get balance with WIF", function() {
 
@@ -91,6 +136,30 @@ describe("BALANCE Features:", function() {
 			data:        "2100000000000000" };
 
 		return callUUT( key, [ apiTestData_call1 ], "resolve", "2100000000000000" );
+
+	});
+
+
+	it("get balance with OpenSig ID", function() {
+
+		var apiTestData_call1 = {
+			expectedURL: "https://blockchain.info/q/addressbalance/19YYzmYa8ggFJbkUWgChfr9C6devpMFd1z",
+			testType:    "response",
+			data:        "5" };
+
+		return callUUT( "OPENSIG-19YYzmYa8ggFJbkUWgChfr9C6devpMFd1z-btc", [ apiTestData_call1 ], "resolve", "5" );
+
+	});
+
+
+	it("get balance with minimal OpenSig ID", function() {
+
+		var apiTestData_call1 = {
+			expectedURL: "https://blockchain.info/q/addressbalance/19YYzmYa8ggFJbkUWgChfr9C6devpMFd1z",
+			testType:    "response",
+			data:        "5" };
+
+		return callUUT( "19YYzmYa8ggFJbkUWgChfr9C6devpMFd1z-btc", [ apiTestData_call1 ], "resolve", "5" );
 
 	});
 
