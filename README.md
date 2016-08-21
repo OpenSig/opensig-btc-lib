@@ -3,7 +3,9 @@
 [![NPM](https://img.shields.io/npm/v/bitcoinjs-lib.svg)](https://www.npmjs.org/package/bitcoinjs-lib)
 
 
-Blockchain e-sign library.  A javascript library that implements the opensig e-sign protocol providing functions to sign and verify files, recording signatures on the bitcoin blockchain. 
+Blockchain digital signature library.  A javascript library that implements the [OpenSig](http://opensig.net/) digitial signature scheme providing functions to digitally sign and verify files, recording signatures on the bitcoin blockchain.
+
+opensig-lib is built using [bitcoinjs-lib](https://github.com/bitcoinjs/bitcoinjs-lib).
 
 ## Primary Features
 - **Create**: generate a new private key.
