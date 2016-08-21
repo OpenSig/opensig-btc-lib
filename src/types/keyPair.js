@@ -23,7 +23,7 @@ function KeyPair( label, key ){
 	
 	var ecPair;
 
-	if( key == undefined ){
+	if( key == undefined || key == '' ){
 		ecPair = bitcoin.ECPair.makeRandom();
 	}
 	else if( isPrivateKey(key) ){
@@ -95,6 +95,7 @@ function KeyPair( label, key ){
 		result = result.replace( /<wifu>/g, this.wifU );
 		result = result.replace( /<pubc>/g, this.publicKeyC );
 		result = result.replace( /<pubu>/g, this.publicKeyU );
+		result = result.replace( /<id>/g, 'OPENSIG-'+this.publicKey+'-btc');
 
 		return result;
 	}
@@ -111,7 +112,7 @@ module.exports = KeyPair;
  * Constants
  */
  
-const FORMAT_FULL = "\nlabel                   : <label>\nprivate key             : <priv>\nwif compressed          : <wifc>\nwif uncompressed        : <wifu>\npublic key compressed   : <pubc>\npublic key uncompressed : <pubu>\n";
+const FORMAT_FULL = "label                   : <label>\nidentity                : <id>\nprivate key             : <priv>\nwif compressed          : <wifc>\nwif uncompressed        : <wifu>\npublic key compressed   : <pubc>\npublic key uncompressed : <pubu>\n";
 
 
 /*

@@ -8,11 +8,12 @@ const expect = chai.expect;
 describe ("GETKEY Feature", function() {
 
 	const helloWorld_FullOutputKey = 
+		"identity                : OPENSIG-13hCoaeW632HQHpzvMmiyNbVWk8Bfpvz14-btc\n" +
 		"private key             : d2a84f4b8b650937ec8f73cd8be2c74add5a911ba64df27458ed8229da804a26\n" +
 		"wif compressed          : L4HCdx7tRz8F1azW9xUACNP2G4gnDoSdLZfJQm8MVEx9WEKwePct\n" +
 		"wif uncompressed        : 5KR4YUtriTY6SWTAn5QprFMrDvrLm8ob4XWXE61m4gQphACdYyz\n" +
 		"public key compressed   : 13hCoaeW632HQHpzvMmiyNbVWk8Bfpvz14\n" +
-		"public key uncompressed : 14Kjekut4gqR8DgxwQXz1nnACVxHQhcjKA";
+		"public key uncompressed : 14Kjekut4gqR8DgxwQXz1nnACVxHQhcjKA\n";
 
 
 	const helloWorld_FullOutputKey_noLabel = 
@@ -47,7 +48,7 @@ describe ("GETKEY Feature", function() {
 
 		it("from no argument", function() {
 			
-			opensig.getKey()
+			return opensig.getKey()
 				.then( function checkResults( key ){
 					checkKey(key, undefined);
 				} );
@@ -57,7 +58,7 @@ describe ("GETKEY Feature", function() {
 
 		it("from an empty argument", function() {
 			
-			opensig.getKey("")
+			return opensig.getKey("")
 				.then( function checkResults( key ){
 					checkKey(key, undefined);
 				} );
@@ -73,7 +74,7 @@ describe ("GETKEY Feature", function() {
 
 		it("from its private key", function() {
 			
-			opensig.getKey("d2a84f4b8b650937ec8f73cd8be2c74add5a911ba64df27458ed8229da804a26")
+			return opensig.getKey("d2a84f4b8b650937ec8f73cd8be2c74add5a911ba64df27458ed8229da804a26")
 				.then( function checkResults( key ){
 					checkKey(key, undefined);
 					expect( key.toString("<full>") ).to.equal(helloWorld_FullOutputKey_noLabel);
@@ -84,7 +85,7 @@ describe ("GETKEY Feature", function() {
 
 		it("from its compressed WIF", function() {
 			
-			opensig.getKey("L4HCdx7tRz8F1azW9xUACNP2G4gnDoSdLZfJQm8MVEx9WEKwePct")
+			return opensig.getKey("L4HCdx7tRz8F1azW9xUACNP2G4gnDoSdLZfJQm8MVEx9WEKwePct")
 				.then( function checkResults( key ){
 					checkKey(key, undefined);
 					expect( key.toString("<full>") ).to.equal(helloWorld_FullOutputKey_noLabel);
@@ -95,7 +96,7 @@ describe ("GETKEY Feature", function() {
 
 		it("from its uncompressed WIF", function() {
 			
-			opensig.getKey("5KR4YUtriTY6SWTAn5QprFMrDvrLm8ob4XWXE61m4gQphACdYyz")
+			return opensig.getKey("5KR4YUtriTY6SWTAn5QprFMrDvrLm8ob4XWXE61m4gQphACdYyz")
 				.then( function checkResults( key ){
 					checkKey(key, undefined);
 					expect( key.toString("<full>") ).to.equal(helloWorld_FullOutputKey_noLabel);
@@ -106,24 +107,9 @@ describe ("GETKEY Feature", function() {
 
 		it("from the file name", function() {
 			
-			opensig.getKey("test/test_files/hello_world.txt")
+			return opensig.getKey("test/test_files/hello_world.txt")
 				.then( function checkResults( key ){
-					checkKey(key, undefined);
-					expect( key.toString("<full>") ).to.equal(helloWorld_FullOutputKey_fileLabel);
-				} );
-
-		});
-
-
-		it("from a File object", function() {
-			var File = function(name){ 
-				this.name = name;
-				this.lastModified = 0;
-			}
-			var file = new File("test/test_files/hello_world.txt");
-			opensig.getKey(file)
-				.then( function checkResults( key ){
-					checkKey(key, undefined);
+					checkKey(key, "test/test_files/hello_world.txt");
 					expect( key.toString("<full>") ).to.equal(helloWorld_FullOutputKey_fileLabel);
 				} );
 
@@ -133,6 +119,21 @@ describe ("GETKEY Feature", function() {
 	});
 	
 
+	describe("generates a KeyPair for hello_world.txt", function() {
+
+
+		it("from its private key", function() {
+			
+			return opensig.getKey("d2a84f4b8b650937ec8f73cd8be2c74add5a911ba64df27458ed8229da804a26")
+				.then( function checkResults( key ){
+					checkKey(key, undefined);
+					expect( key.toString("<full>") ).to.equal(helloWorld_FullOutputKey_noLabel);
+				} );
+
+		});
+
+	});
+	
 });
 
 
