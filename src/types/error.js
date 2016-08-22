@@ -17,10 +17,14 @@ OpenSigError = function( code, error, details ){
 
 OpenSigError.prototype = new Error;
 
+
 module.exports.OpenSigError = OpenSigError;
 
 module.exports.InternalError = 
 	function( msg, details ){ return new OpenSigError(100, "Internal Error! "+msg, details); }
+
+module.exports.NonEcdsaKeyError = 
+	function( details ){ return new OpenSigError(101, "Internal Error! Private key is outside of the valid ECDSA range", details); }
 
 module.exports.ArgumentError = 
 	function( msg, details ){ return new OpenSigError(200, msg, details); }
@@ -123,7 +127,7 @@ FS_ERROR_CODES = {
 	EMLINK: "too many links" };
 
 decodeFSError = function( err ){
-	if( err.code == undefined ) return err;
+	if( err == undefined || err.code == undefined ) return err;
 	else if( err.code in FS_ERROR_CODES ) return FS_ERROR_CODES[err.code] + " " + err.path;
 	else return "unknown error accessing " + err.path;
 };

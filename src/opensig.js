@@ -21,6 +21,7 @@ const FS = require('fs');
 const minimumPayment = 5430;
 const minimumFee = 10000;
 
+var testData = undefined;
 
 // Export
 
@@ -34,7 +35,8 @@ module.exports = {
 	getKey: getKey,
 	blockchainAPI: Blockchain,
 	KeyPair: KeyPair,
-	Error: Err
+	Error: Err,
+	testPoint: testPoint
 }
 
 
@@ -268,7 +270,8 @@ function publish( txn ){
  	catch(err){
 		return sha256( token )
 			.catch( function(err){ 
-				throw new Err.ArgumentError("argument '"+token+"' is not a private key, readable file or wif", token); 
+				if( err.code && err.code == new Err.FileSystemError().code ) throw new Err.ArgumentError("argument '"+token+"' is not a private key, readable file or wif", token); 
+				else throw err;
 			});
  	}
 }
@@ -287,7 +290,7 @@ function publish( txn ){
  */
 function getPublicKey( token ){
 	var id = decodeOpenSigID(token);
-	if( id ){
+	if( id != undefined ){
 		return new Promise( 
 			function( resolver, rejecter ){ resolver( id.publicKey ); } );
 	}
@@ -364,26 +367,42 @@ function TransactionInputs( utxos, target, change ){
   *
   * Returns a promise to compute the sha256 hash of the given file. 
   */
-function sha256( file ){
+function sha256( file, postfix ){
+	if( !postfix ) postfix = "";
 	return new Promise( 
 		function( resolve, reject ){
-			var hash = Crypto.createHash('sha256');
-			var fd;
 			try{
-				fd = FS.ReadStream(file);
+				var hash = Crypto.createHash('sha256');
+				var fd = FS.ReadStream(file);
+				fd.on('data', function(d) { hash.update(d); });
+				fd.on('error', function(err){ reject( new Err.FileSystemError(err) ); });
+				fd.on('end', function() { 
+					if( postfix.length > 0 ) hash.update(postfix, 'ascii');
+					var keyPair;
+					try{
+						if( testData && testData.nonEcdsaKeyCount && postfix.length < testData.nonEcdsaKeyCount ){
+							throw new Err.NonEcdsaKeyError(); // test point to simulate the generation of keys outside of the valid ECDSA range
+						}
+						keyPair = new KeyPair( file, hash.digest('hex') );
+					}
+					catch(err){ 
+						reject( new Err.NonEcdsaKeyError() );
+					}
+					if( keyPair ) resolve( keyPair );
+				});
 			}
-			catch(err){ 
-				reject( new Err.FileSystemError(err) ); 
+			catch(err){
+				reject( new Err.FileSystemError(err) );
 			}
-			fd.on('data', function(d) { hash.update(d); });
-			fd.on('error', function(err){ reject( new Err.FileSystemError(err) ); });
-			fd.on('end', function() { 
-				var keyPair = new KeyPair( file, hash.digest('hex') );
-				resolve( keyPair ); 
-			});
-		} );
+		})
+		.catch( function(err){
+			if( err.code && err.code == new Err.NonEcdsaKeyError().code ){
+				if( postfix.length < 2 ) return sha256( file, postfix + String.fromCharCode(0) );
+				else throw new Err.InternalError("Failed to generate a valid ECDSA key after 3 attempts");
+			}
+			else throw err;
+		});
 }
-
 
 
 function isPublicKey( str ){ return str && str.match && str.match(/^[0-9A-Za-z^OIl]{27,34}$/); }
@@ -401,4 +420,8 @@ function decodeOpenSigID( str ){
 
 function checkForMissingArg( arg, name ){ 
 	if( arg == undefined || (""+arg).match(/^\s*$/) ) throw new Err.ArgumentError(name+" argument is missing"); 
+}
+
+function testPoint( data ){
+	testData = data;
 }
