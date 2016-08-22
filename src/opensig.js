@@ -33,10 +33,22 @@ module.exports = {
 	send: send,
 	balance: balance,
 	getKey: getKey,
+	getSupportedBlockchains: getSupportedBlockchains,
 	blockchainAPI: Blockchain,
 	KeyPair: KeyPair,
 	Error: Err,
 	testPoint: testPoint
+}
+
+
+/*
+ * getSupportedBlockchains 
+ *
+ * Returns a list of the blockchains supported by OpenSig.  Each element is a record of
+ * the form { code: 'btc', name: 'Bitcoin' }
+ */
+function getSupportedBlockchains(){
+	return [ { code: 'btc', name: 'Bitcoin' } ];
 }
 
 

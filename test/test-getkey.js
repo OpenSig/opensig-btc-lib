@@ -5,6 +5,16 @@ const opensig = require("../src/opensig");
 const expect = chai.expect;
 
 
+describe ("GetSupportedBlockchains Feature", function() {
+
+		it("returns the correct set of blockchains", function() {
+			var bcs = opensig.getSupportedBlockchains();
+			expect( JSON.stringify(bcs) ).to.equal('[{"code":"btc","name":"Bitcoin"}]');
+		});
+
+});
+
+
 describe ("GETKEY Feature", function() {
 
 	const helloWorld_FullOutputKey = 
