@@ -395,7 +395,8 @@ function sha256( file, postfix ){
 						if( testData && testData.nonEcdsaKeyCount && postfix.length < testData.nonEcdsaKeyCount ){
 							throw new Err.NonEcdsaKeyError(); // test point to simulate the generation of keys outside of the valid ECDSA range
 						}
-						keyPair = new KeyPair( file, hash.digest('hex') );
+						var filename = file.fullPath || file;  // cater for both file Entry and string file name
+						keyPair = new KeyPair( filename, hash.digest('hex') );
 					}
 					catch(err){ 
 						reject( new Err.NonEcdsaKeyError() );
