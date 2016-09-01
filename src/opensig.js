@@ -130,6 +130,7 @@ function create( label, privateKey ){
 
 /*
  * send <from> <to> <amount> [fee] [publish]
+ * send <from> <to> <amount> [fee] [publish]
  *
  * Returns a promise to create a signed transaction to send the given amount from one 
  * address to another and, optionally, to publish it.  By default the transaction is
@@ -138,7 +139,8 @@ function create( label, privateKey ){
  * Parameters:
  *   from       : can be a KeyPair, wif, private key (hex64) or file.
  *   to         : can be a public key, KeyPair, wif, private key (hex64) or file.
- *   amount     : number of satoshis to send or "all" to empty the source address
+ *   amount     : number of satoshis to send or "all" to empty the source address.  If
+ *                amount is an array then an output for each element is created.
  *   fee        : miner's fee in satoshis.  If undefined the standard fee is used.
  *   publish    : if true, publish the transaction to the blockchain
  */
@@ -148,10 +150,22 @@ function send( from, to, amount, feeIn, publishIn ){
 	checkForMissingArg( to, "to" );
 	checkForMissingArg( amount, "amount" );
 	
-	var payment = (amount == "all") ? amount : parseInt(amount);
+	function sumAmounts(arr){ 
+		var total = 0; 
+		for(var i in arr){ 
+			var arrAmount = parseInt(arr[i]);
+			if( isNaN(arrAmount) || payment <= 0 ) throw new Err.ArgumentError("invalid payment amount '"+arr[i]+"'");
+			total += arrAmount;
+		}; 
+		return total;
+	}
+	
+	var multipleOutputs = Array.isArray(amount);
+	var totalAmount = multipleOutputs ? sumAmounts(amount) : parseInt(amount);
+	var payment = (amount == "all") ? amount : totalAmount;
 	var fee = (feeIn == undefined) ? minimumFee : parseInt(feeIn);
 
-	if( payment != "all" && ( isNaN(payment) || payment <= 0 ) ) throw new Err.ArgumentError("invalid payment amount '"+amount+"'");
+	if( payment != "all" && !multipleOutputs && ( isNaN(payment) || payment <= 0 ) ) throw new Err.ArgumentError("invalid payment amount '"+amount+"'");
 	if( isNaN(fee) || fee < 0 ) throw new Err.ArgumentError("invalid fee '"+feeIn+"'");
 
 	var fromKey;
@@ -204,7 +218,13 @@ function send( from, to, amount, feeIn, publishIn ){
 		
 		// add outputs
 		try{
-			txnBuilder.addOutput( toKey, payment );
+			if( multipleOutputs ){
+				for( var i in amount ){
+					var txoAmount = parseInt(amount[i]);
+					txnBuilder.addOutput( toKey, txoAmount );
+				}
+			}
+			else txnBuilder.addOutput( toKey, payment );
 			if( txInputs.change > 0 ) txnBuilder.addOutput( fromKey.publicKey, txInputs.change );
 		}
 		catch(err){ throw new Err.InternalError("could not build transaction due to: "+err.message,err); }

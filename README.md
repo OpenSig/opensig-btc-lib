@@ -65,15 +65,15 @@ opensig.verify( <file> )   // returns a promise
 `file`  File to verify.  _(string containing a file path or a file's hex64 private key or WIF.  Can also accept a KeyPair object)_.
 
 ### Send
-Returns a promise to resolve a Receipt object containing a transaction to send the given amount from the `from` key to the `to` address, and, optionally, to publish the transaction on the blockchain.
+Returns a promise to resolve a Receipt object containing a transaction to send the given amount or amounts from the `from` key to the `to` address, and, optionally, to publish the transaction on the blockchain.
 ```javascript
-opensig.send( <from>, <to>, [amount], [fee], [publish] );  // returns a promise
+opensig.send( <from>, <to>, <amount>, [fee], [publish] );  // returns a promise
 ```
 `from`  Private key or wif of the address to spend from.  _(string containing a hex64 private key, WIF or file.  Can also accept a KeyPair object)_.
 
 `to`   Address to send to.  _(string containing a public key, hex64 private key, WIF or file.  Can also accept a KeyPair object)_ 
 
-`amount`   Amount to spend in the transaction.  Defaults to 5430 satoshis. _(positive integer)_
+`amount`   Amount to spend in the transaction.  If an array is passed then a transaction output for each element will be created.  _(positive integer_ or _array of positive integers)_ 
 
 `fee`   Amount to include as the miner's fee in addition to the amount.  Defaults to 10000 satoshis. _(positive integer)_
 
