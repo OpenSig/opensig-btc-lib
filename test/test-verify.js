@@ -69,6 +69,28 @@ describe("VERIFY Feature:", function() {
 		});
 
 
+		it("calling verify for hello_world.txt with multiple transaction inputs returns my signature just once", function() {
+
+			var apiTestData = {
+				expectedURL: "https://blockchain.info/address/13hCoaeW632HQHpzvMmiyNbVWk8Bfpvz14?format=json",
+				testType:    "response",
+				file:        "test/test_files/blockchain.info/hello_world-tx_response-signed_by_me-multiple_tx_inputs.json" };
+			
+			var signature1 = new Signature();
+			signature1.time  = new Date(1459171868*1000);
+			signature1.key   = "121GfwxgvdEUck7Xb4d5wbMnf7Xm2b4zw3";
+			signature1.label = "";
+			
+			var signature2 = new Signature();
+			signature2.time  = new Date(1459091439*1000);
+			signature2.key   = "121GfwxgvdEUck7Xb4d5wbMnf7Xm2b4zw3";
+			signature2.label = "";
+			
+			return callUUT( "test/test_files/hello_world.txt", [ apiTestData ], "resolve", [ signature1, signature2 ] );
+
+		});
+
+
 	});
 	
 

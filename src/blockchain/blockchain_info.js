@@ -110,8 +110,10 @@ function parseTransactionQueryResponse( response, key ){
 		for( var txn in json.txs ){
 			for( var output in json.txs[txn].out ){
 				if( json.txs[txn].out[output].addr == key ){
-					for( var input in json.txs[txn].inputs ){
-						var sig = new Signature(json.txs[txn].time, json.txs[txn].inputs[input].prev_out.addr);
+					if( json.txs[txn].inputs.length > 0 ){
+						// an OpenSig signature transaction consists of 1 or more inputs from the same address so 
+						// just record the first input
+						var sig = new Signature(json.txs[txn].time, json.txs[txn].inputs[0].prev_out.addr);
 						signatures.push(sig);
 					}
 				}
