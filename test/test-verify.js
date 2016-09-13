@@ -57,11 +57,13 @@ describe("VERIFY Feature:", function() {
 			var signature1 = new Signature();
 			signature1.time  = new Date(1459171868*1000);
 			signature1.key   = "121GfwxgvdEUck7Xb4d5wbMnf7Xm2b4zw3";
+			signature1.bcCode = 'btc';
 			signature1.label = "";
 			
 			var signature2 = new Signature();
 			signature2.time  = new Date(1459091439*1000);
 			signature2.key   = "121GfwxgvdEUck7Xb4d5wbMnf7Xm2b4zw3";
+			signature2.bcCode = 'btc';
 			signature2.label = "";
 			
 			return callUUT( "test/test_files/hello_world.txt", [ apiTestData ], "resolve", [ signature1, signature2 ] );
@@ -79,11 +81,13 @@ describe("VERIFY Feature:", function() {
 			var signature1 = new Signature();
 			signature1.time  = new Date(1459171868*1000);
 			signature1.key   = "121GfwxgvdEUck7Xb4d5wbMnf7Xm2b4zw3";
+			signature1.bcCode = 'btc';
 			signature1.label = "";
 			
 			var signature2 = new Signature();
 			signature2.time  = new Date(1459091439*1000);
 			signature2.key   = "121GfwxgvdEUck7Xb4d5wbMnf7Xm2b4zw3";
+			signature2.bcCode = 'btc';
 			signature2.label = "";
 			
 			return callUUT( "test/test_files/hello_world.txt", [ apiTestData ], "resolve", [ signature1, signature2 ] );
@@ -107,11 +111,13 @@ describe("VERIFY Feature:", function() {
 			var signature1 = new Signature();
 			signature1.time  = new Date(1459171868*1000);
 			signature1.key   = "121GfwxgvdEUck7Xb4d5wbMnf7Xm2b4zw3";
+			signature1.bcCode = 'btc';
 			signature1.label = "";
 			
 			var signature2 = new Signature();
 			signature2.time  = new Date(1459091439*1000);
 			signature2.key   = "121GfwxgvdEUck7Xb4d5wbMnf7Xm2b4zw3";
+			signature2.bcCode = 'btc';
 			signature2.label = "";
 			
 			return callUUT( "L4HCdx7tRz8F1azW9xUACNP2G4gnDoSdLZfJQm8MVEx9WEKwePct", [ apiTestData ], "resolve", [ signature1, signature2 ] );
@@ -129,11 +135,13 @@ describe("VERIFY Feature:", function() {
 			var signature1 = new Signature();
 			signature1.time  = new Date(1459171868*1000);
 			signature1.key   = "121GfwxgvdEUck7Xb4d5wbMnf7Xm2b4zw3";
+			signature1.bcCode = 'btc';
 			signature1.label = "";
 			
 			var signature2 = new Signature();
 			signature2.time  = new Date(1459091439*1000);
 			signature2.key   = "121GfwxgvdEUck7Xb4d5wbMnf7Xm2b4zw3";
+			signature2.bcCode = 'btc';
 			signature2.label = "";
 			
 			return callUUT( "5KR4YUtriTY6SWTAn5QprFMrDvrLm8ob4XWXE61m4gQphACdYyz", [ apiTestData ], "resolve", [ signature1, signature2 ] );
@@ -151,11 +159,13 @@ describe("VERIFY Feature:", function() {
 			var signature1 = new Signature();
 			signature1.time  = new Date(1459171868*1000);
 			signature1.key   = "121GfwxgvdEUck7Xb4d5wbMnf7Xm2b4zw3";
+			signature1.bcCode = 'btc';
 			signature1.label = "";
 			
 			var signature2 = new Signature();
 			signature2.time  = new Date(1459091439*1000);
 			signature2.key   = "121GfwxgvdEUck7Xb4d5wbMnf7Xm2b4zw3";
+			signature2.bcCode = 'btc';
 			signature2.label = "";
 			
 			return callUUT( "d2a84f4b8b650937ec8f73cd8be2c74add5a911ba64df27458ed8229da804a26", [ apiTestData ], "resolve", [ signature1, signature2 ] );
@@ -175,11 +185,13 @@ describe("VERIFY Feature:", function() {
 			var signature1 = new Signature();
 			signature1.time  = new Date(1459171868*1000);
 			signature1.key   = "121GfwxgvdEUck7Xb4d5wbMnf7Xm2b4zw3";
+			signature1.bcCode = 'btc';
 			signature1.label = "";
 			
 			var signature2 = new Signature();
 			signature2.time  = new Date(1459091439*1000);
 			signature2.key   = "121GfwxgvdEUck7Xb4d5wbMnf7Xm2b4zw3";
+			signature2.bcCode = 'btc';
 			signature2.label = "";
 			
 			return callUUT( key, [ apiTestData ], "resolve", [ signature1, signature2 ] );
@@ -247,11 +259,12 @@ describe("VERIFY Feature:", function() {
 			var signature = new Signature();
 			signature.time  = new Date(1459171868*1000);
 			signature.key   = "121GfwxgvdEUck7Xb4d5wbMnf7Xm2b4zw3";
+			signature.bcCode = 'btc';
 			signature.label = "My Label";
 			
-			expect( signature.toString() ).to.equal("Mon, 28 Mar 2016 13:31:08 GMT	121GfwxgvdEUck7Xb4d5wbMnf7Xm2b4zw3	My Label");
-			expect( signature.toString( "public key: <pub>, label: <label>, $%^&@: <longtime>, time: <time>   <pub>") )
-				.to.equal("public key: 121GfwxgvdEUck7Xb4d5wbMnf7Xm2b4zw3, label: My Label, $%^&@: Mon, 28 Mar 2016 13:31:08 GMT, time: 1459171868   121GfwxgvdEUck7Xb4d5wbMnf7Xm2b4zw3");
+			expect( signature.toString() ).to.equal("Mon, 28 Mar 2016 13:31:08 GMT	OPENSIG-121GfwxgvdEUck7Xb4d5wbMnf7Xm2b4zw3-btc	My Label");
+			expect( signature.toString( "id: <id>, public key: <pub>, label: <label>, $%^&@: <longtime>, time: <time>   <pub>") )
+				.to.equal("id: OPENSIG-121GfwxgvdEUck7Xb4d5wbMnf7Xm2b4zw3-btc, public key: 121GfwxgvdEUck7Xb4d5wbMnf7Xm2b4zw3, label: My Label, $%^&@: Mon, 28 Mar 2016 13:31:08 GMT, time: 1459171868   121GfwxgvdEUck7Xb4d5wbMnf7Xm2b4zw3");
 		});
 
 

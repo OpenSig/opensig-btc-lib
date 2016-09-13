@@ -6,11 +6,13 @@
  */
 
 // Signature
-Signature = function( time, key, label ){
+Signature = function( time, key, bcCode, label ){
 
 	this.time = new Date(time*1000);
 	this.key = key;
 	this.label = (label == undefined) ? "" : label;;
+	this.bcCode = bcCode;
+	
 	
 	/*
 	 * toString( [format] )
@@ -23,8 +25,9 @@ Signature = function( time, key, label ){
 	 *    <longtime> the blockchain transaction time as a date string
 	 */
 	this.toString = function( format ){
-		var result = ( format == undefined ) ? "<longtime>	<pub>	<label>" : ""+format;
+		var result = ( format == undefined ) ? "<longtime>	<id>	<label>" : ""+format;
 		result = result.replace( /<label>/g, this.label );
+		result = result.replace( /<id>/g, "OPENSIG-"+this.key+"-"+this.bcCode );
 		result = result.replace( /<pub>/g, this.key );
 		result = result.replace( /<time>/g, this.time.getTime()/1000 );
 		result = result.replace( /<longtime>/g, this.time.toUTCString() );
