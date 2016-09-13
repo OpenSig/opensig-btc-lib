@@ -104,8 +104,9 @@ Create a new random private key and log its information to the console in variou
 var key = opensig.create();
 console.log( key.toString() );
 console.log( key.toString("<full>") );
+console.log( key.toString("<id>") );
 console.log( key.toString("<pub>") );
-console.log( key.toString("public key: <pub>, wif: <wif>, private key: <priv>") );
+console.log( key.toString("id: <id>, public key: <pub>, wif: <wif>, private key: <priv>") );
 console.log( key.toString("compressed keys: <pubc> <wifc>") );
 console.log( key.toString("uncompressed keys: <pubu> <wifu>") );
 ```

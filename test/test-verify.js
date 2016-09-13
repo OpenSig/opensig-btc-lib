@@ -263,8 +263,8 @@ describe("VERIFY Feature:", function() {
 			signature.label = "My Label";
 			
 			expect( signature.toString() ).to.equal("Mon, 28 Mar 2016 13:31:08 GMT	OPENSIG-121GfwxgvdEUck7Xb4d5wbMnf7Xm2b4zw3-btc	My Label");
-			expect( signature.toString( "id: <id>, public key: <pub>, label: <label>, $%^&@: <longtime>, time: <time>   <pub>") )
-				.to.equal("id: OPENSIG-121GfwxgvdEUck7Xb4d5wbMnf7Xm2b4zw3-btc, public key: 121GfwxgvdEUck7Xb4d5wbMnf7Xm2b4zw3, label: My Label, $%^&@: Mon, 28 Mar 2016 13:31:08 GMT, time: 1459171868   121GfwxgvdEUck7Xb4d5wbMnf7Xm2b4zw3");
+			expect( signature.toString( "id: <id>, public key: <pub>, label: <label>, $%^&@: <longtime>, time: <time>, address <pub>, network <network>") )
+				.to.equal("id: OPENSIG-121GfwxgvdEUck7Xb4d5wbMnf7Xm2b4zw3-btc, public key: 121GfwxgvdEUck7Xb4d5wbMnf7Xm2b4zw3, label: My Label, $%^&@: Mon, 28 Mar 2016 13:31:08 GMT, time: 1459171868, address 121GfwxgvdEUck7Xb4d5wbMnf7Xm2b4zw3, network btc");
 		});
 
 

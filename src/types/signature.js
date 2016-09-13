@@ -20,7 +20,9 @@ Signature = function( time, key, bcCode, label ){
 	 * format: string representation of the output format containing the following
 	 *         substrings for substitution
 	 *    <label>    the signee's name or label
+	 *    <id>       the OpenSig public ID
 	 *    <pub>      the public key (blockchain address)
+	 *    <network>  the blockchain code, e.g. 'btc'
 	 *    <time>     the blockchain transaction time (seconds since 1/1/1970)
 	 *    <longtime> the blockchain transaction time as a date string
 	 */
@@ -29,6 +31,7 @@ Signature = function( time, key, bcCode, label ){
 		result = result.replace( /<label>/g, this.label );
 		result = result.replace( /<id>/g, "OPENSIG-"+this.key+"-"+this.bcCode );
 		result = result.replace( /<pub>/g, this.key );
+		result = result.replace( /<network>/g, this.bcCode );
 		result = result.replace( /<time>/g, this.time.getTime()/1000 );
 		result = result.replace( /<longtime>/g, this.time.toUTCString() );
 		return result;

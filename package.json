@@ -1,6 +1,6 @@
 {
   "name": "opensig-lib",
-  "version": "1.0.0-alpha.8",
+  "version": "1.0.0-alpha.9",
   "description": "Blockchain e-sign library",
   "main": "./src/opensig.js",
   "files": [
