@@ -73,7 +73,7 @@ opensig.send( <from>, <to>, <amount>, [fee], [publish] );  // returns a promise
 
 `to`   Address to send to.  _(string containing a public key, hex64 private key, WIF or file.  Can also accept a KeyPair object)_ 
 
-`amount`   Amount to spend in the transaction.  If an array is passed then a transaction output for each element will be created.  _(positive integer_ or _array of positive integers)_ 
+`amount`   Amount to spend in the transaction (in satoshis).  If an array is passed then a transaction output for each element will be created.  _(positive integer_ or _array of positive integers)_ 
 
 `fee`   Amount to include as the miner's fee in addition to the amount.  Defaults to 10000 satoshis. _(positive integer)_
 
