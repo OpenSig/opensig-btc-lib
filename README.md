@@ -2,6 +2,7 @@
 
 [![NPM](https://img.shields.io/npm/v/bitcoinjs-lib.svg)](https://www.npmjs.org/package/bitcoinjs-lib)
 
+**DEPRECIATED**.  This original version of OpenSig is no longer supported.  The [new standard](https://github.com/opensig/opensig) has moved to EVM-based blockchains to allow for more advanced features.
 
 Blockchain digital signature library.  A javascript library that implements the [OpenSig](http://opensig.net/) digitial signature scheme providing functions to digitally sign and verify files, recording signatures on the bitcoin blockchain.
 
